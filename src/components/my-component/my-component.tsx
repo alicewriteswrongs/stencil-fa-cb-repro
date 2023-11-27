@@ -1,10 +1,11 @@
-import { Component, Prop, h } from '@stencil/core';
+import { Component, Prop, h, State } from '@stencil/core';
 import { format } from '../../utils/utils';
 
 @Component({
   tag: 'my-component',
   styleUrl: 'my-component.css',
   shadow: true,
+  formAssociated: true,
 })
 export class MyComponent {
   /**
@@ -22,11 +23,27 @@ export class MyComponent {
    */
   @Prop() last: string;
 
+  @State() showWords: boolean = false;
+
+  formAssociatedCallback(form: any) {
+    console.log('formAssociated called');
+    console.log(this.showWords);
+    form.ariaLabel = 'formAssociated called';
+  }
+
+  formDisabledCallback(disabled: boolean) {
+    console.log('ive been', disabled);
+    this.showWords = disabled;
+  }
+
   private getText(): string {
     return format(this.first, this.middle, this.last);
   }
 
   render() {
-    return <div>Hello, World! I'm {this.getText()}</div>;
+    console.log('render');
+    return this.showWords ?
+      <div>Hello, World! I'm {this.getText()}</div>
+        : <div>no show</div>;
   }
 }
